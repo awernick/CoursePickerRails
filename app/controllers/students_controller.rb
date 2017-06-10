@@ -7,7 +7,7 @@ class StudentsController < ApplicationController
   def create
   end
 
-  def profile
+  def dashboard
   end
 
   def edit
