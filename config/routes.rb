@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root "pages#index"
+  root "courses#index"
   
   # Sections
   post '/sections/:uuid/enroll' => 'sections#enroll', as: :enroll_section
