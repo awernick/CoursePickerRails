@@ -15,6 +15,8 @@ gem 'bcrypt'
 gem 'bootstrap-sass', '~> 3.3.6'
 gem 'bitmask_attributes'
 gem 'will_paginate', '~> 3.1.0'
+gem 'bootstrap-timepicker-rails'
+gem 'chronic'
 
 group :development, :test do
   gem 'byebug'

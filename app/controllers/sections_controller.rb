@@ -1,3 +1,5 @@
+require 'chronic'
+
 class SectionsController < ApplicationController
   include SessionsHelper
 
@@ -13,8 +15,31 @@ class SectionsController < ApplicationController
     end
 
     # Display filtered days
-    if params[:days]
+    if params[:days].present?
       @sections = @sections.with_days(*params[:days].map(&:to_sym))
+    end
+
+    # Display classes later or starting at the the start time
+    if params[:start_time].present?
+      start_time = Chronic.parse(params[:start_time]).strftime("%I:%M%p")
+      @sections = @sections.where("start_time >= ?", start_time)
+    end
+
+    # Display classes earlier or ending at end_time
+    if params[:end_time].present?
+      end_time = Chronic.parse(params[:end_time]).strftime("%I:%M%p")
+      @sections = @sections.where("end_time <= ?", end_time)
+    end
+
+    # Try to find the professor by last name or first name
+    # TODO: Search by both properties and not either or.
+    if params[:professor].present?
+      @sections = @sections.joins(:professor).where(
+        'professors.first_name LIKE ? OR ' \
+        'professors.last_name LIKE ?', 
+        "%#{params[:professor]}", 
+        "%#{params[:professor]}"
+      )
     end
 
     @sections.paginate({

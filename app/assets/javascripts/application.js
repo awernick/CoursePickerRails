@@ -13,4 +13,8 @@
 //= require jquery
 //= require jquery_ujs
 //= require bootstrap-sprockets
+//= require bootstrap-timepicker
 //= require_tree .
+
+
+$('#timepicker1').timepicker();
