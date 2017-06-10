@@ -1,4 +1,7 @@
 class SectionsController < ApplicationController
+  include SessionsHelper
+
+  before_filter :authenticate_student, only: [:enroll, :drop]
   before_filter :set_course, except: [:new, :create]
   before_filter :set_section, except: [:index, :new, :create]
 
@@ -75,6 +78,13 @@ class SectionsController < ApplicationController
       @section = @course.sections.find_by(uuid: params[:id])
     else
       @section = Section.find_by(uuid: params[:id])
+    end
+  end
+
+  def authenticate_student
+    unless current_user.present?
+      # FLASH ERROR
+      redirect_to login_path
     end
   end
 

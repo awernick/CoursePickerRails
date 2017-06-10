@@ -1,11 +1,20 @@
-class CourseController < ApplicationController
+class CoursesController < ApplicationController
   before_action :set_course, except: [:index, :new, :create]
 
   def index
-    @course = Course.all
+    @courses = Course.all
+
+    respond_to do |format|
+      format.json { render json: @courses }
+      format.html
+    end
   end
 
   def show
+    respond_to do |format|
+      format.html
+      format.json { render json: @course }
+    end
   end
 
   def new
@@ -15,9 +24,15 @@ class CourseController < ApplicationController
   def create
     @course = Course.new(course_params)
     if @course.save
-      redirect_to action: :index
+      respond_to do |format|
+        format.json { render json: @course }
+        format.html { redirect_to action: :index }
+      end
     else
-      render action: :new
+      respond_to do |format|
+        format.json { render json: @course.errors.full_messages }
+        format.html { render action: :new }
+      end
     end
   end
 
