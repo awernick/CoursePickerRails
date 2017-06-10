@@ -48,22 +48,14 @@ class SectionsController < ApplicationController
   end
 
   def enroll
-    @student = Student.find(params[:student_id])
-
-    # Make sure the Student trying to enroll
-    # is the same as the logged in student
-    unless logged_in? @student
-      # FLASH ERROR
-      return redirect_to action: :index
-    end
-
-    @enrollment = Enrollment.new(student: @student, section: @section)
+    @enrollment = Enrollment.new(student: current_student, section: @section)
     if not @enrollment.save
-      # FLASH ERROR
+      flash[:danger] = "You are already enrolled!"
     end
-
+    
     # Should probably redirect to referrer
-    redirect_to action: :index
+    flash[:success] = "You have succesfully enrolled for the course!"
+    redirect_to request.referrer
   end
 
   def drop
@@ -71,12 +63,12 @@ class SectionsController < ApplicationController
       # Destroy Section - Student association to drop
       @enrollment = @section.enrollments.find_by(student: current_student)
       @enrollment.destroy
+      flash[:info] = "You have dropped the course"
     else
-      # FLASH ERROR
+      flash[:danger] = "There was an error. Please try again later."
     end
 
-    # Should probably redirect to referrer
-    redirect_to action: :index
+    redirect_to request.referrer
   end
 
   private 
@@ -89,9 +81,9 @@ class SectionsController < ApplicationController
 
   def set_section
     if @course.present?
-      @section = @course.sections.find_by(uuid: params[:id])
+      @section = @course.sections.find_by(uuid: params[:uuid])
     else
-      @section = Section.find_by(uuid: params[:id])
+      @section = Section.find_by(uuid: params[:uuid])
     end
   end
 

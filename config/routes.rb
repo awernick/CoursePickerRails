@@ -1,13 +1,13 @@
 Rails.application.routes.draw do
   root "pages#index"
   
+  # Sections
+  post '/sections/:uuid/enroll' => 'sections#enroll', as: :enroll_section
+  post '/sections/:uuid/drop' => 'sections#drop', as: :drop_section
+
   # Courses / Sections
   resources :courses do
-    resources :sections do
-      member do
-        post :enroll
-      end
-    end
+    resources :sections
   end
 
   # Sessions

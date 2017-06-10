@@ -1,0 +1,30 @@
+<div class="col-sm-12">
+  <h1> Courses: <%= @course.name %> </h1>
+  <h2> Available Times </h2>
+  <hr/>
+  <table class="table table-striped">
+    <thead>
+      <th> Days </th>
+      <th> Meeting Time </th>
+      <th> Professor </th>
+      <th> &nbsp; </th>
+    </thead>
+    <tbody>
+      <% for section in @sections %>
+        <tr>
+          <td> <%= section.date %> </td>
+          <td> <%= section.time %> </td>
+          <td></td>
+          <% if section.enrolled?(current_student) %>
+            <td> <%= link_to 'Drop Course', 
+              drop_section_path(section.uuid), method: :post %> </td>
+          <% else %>
+            <td> <%= link_to 'Enroll', 
+              enroll_section_path(section.uuid), method: :post %> </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+
+  </table>
+</div>

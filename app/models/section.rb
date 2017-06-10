@@ -11,4 +11,12 @@ class Section < ActiveRecord::Base
   before_save do
     self.uuid = SecureRandom.uuid
   end
+
+  def enrolled?(student)
+    students.exists?(student)
+  end
+
+  def to_param
+    self.uuid
+  end
 end
