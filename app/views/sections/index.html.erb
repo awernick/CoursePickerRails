@@ -4,7 +4,7 @@
   <hr/>
   <table class="table table-striped">
     <thead>
-      <th> Days </th>
+      <th> Class Days </th>
       <th> Meeting Time </th>
       <th> Professor </th>
       <th> &nbsp; </th>
@@ -12,10 +12,10 @@
     <tbody>
       <% for section in @sections %>
         <tr>
-          <td> <%= section.date %> </td>
-          <td> <%= section.time %> </td>
+          <td> <%= day_bitmask_to_str(section.days) %> </td>
+          <td> <%= section.start_time %> </td>
           <td></td>
-          <% if section.enrolled?(current_student) %>
+          <% if logged_in? && section.enrolled?(current_student) %>
             <td> <%= link_to 'Drop Course', 
               drop_section_path(section.uuid), method: :post %> </td>
           <% else %>

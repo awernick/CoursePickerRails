@@ -12,6 +12,19 @@ class Section < ActiveRecord::Base
     self.uuid = SecureRandom.uuid
   end
 
+  # Use a bitmask to store meeting days
+  DAYS = {
+    :mon => "Monday",
+    :tue => "Tuesday",
+    :wed => "Wednesday",
+    :thu => "Thursday",
+    :fri => "Friday",
+    :sat => "Saturday",
+    :sun => "Sunday"
+  }
+
+  bitmask :days, as: DAYS.keys
+
   def enrolled?(student)
     students.exists?(student)
   end
