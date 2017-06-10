@@ -11,9 +11,9 @@ Rails.application.routes.draw do
   end
 
   # Sessions
-  get  '/login', 'sessions#new'
-  post '/login', 'sessions#create'
-  get  '/logout', 'sessions#destroy'
+  get  '/login'  => 'sessions#new'
+  post '/login'  => 'sessions#create'
+  get  '/logout' => 'sessions#destroy'
 
   # Students
   resources :students, except: [:index, :show] do

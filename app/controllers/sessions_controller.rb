@@ -1,5 +1,7 @@
 class SessionsController < ApplicationController
-  before_filter :set_student
+  include SessionsHelper
+
+  before_filter :set_student, except: :new
 
   def new
     if logged_in?(@student)
@@ -8,7 +10,7 @@ class SessionsController < ApplicationController
   end
 
   def create
-    if @student.authenticate(params[:session][:password])
+    if @student && @student.authenticate(params[:session][:password])
       login(@student)
       redirect_to @student
     else
@@ -25,6 +27,6 @@ class SessionsController < ApplicationController
   private
 
   def set_student
-    @student = Student.find_by(params[:session][:username])
+    @student = Student.find_by(username: params[:session][:username])
   end
 end

@@ -1,5 +1,5 @@
 module SessionsHelper
-  def log_in(student)
+  def login(student)
     session[:student_id] = student.id
   end
 
