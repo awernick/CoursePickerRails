@@ -13,7 +13,7 @@ class CourseController < ApplicationController
   end
 
   def create
-    @course = Course.new(params[:course])
+    @course = Course.new(course_params)
     if @course.save
       redirect_to action: :index
     else
@@ -37,5 +37,9 @@ class CourseController < ApplicationController
 
   def set_course
     @course = Course.find(params[:id])
+  end
+
+  def course_params
+    params.require(:course).permit(:name, :description, :cost)
   end
 end
