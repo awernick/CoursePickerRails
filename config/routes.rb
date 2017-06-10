@@ -17,6 +17,8 @@ Rails.application.routes.draw do
 
   # Students
   resources :students, except: [:index, :show] do
-    get '/:id' => 'students#dashboard'
+    collection do
+      get '/:id' => 'students#dashboard'
+    end
   end
 end

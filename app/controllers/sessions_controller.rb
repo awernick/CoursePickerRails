@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
   include SessionsHelper
 
-  before_filter :set_student, except: :new
+  before_filter :set_student, only: :create
 
   def new
     if logged_in?

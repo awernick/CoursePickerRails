@@ -4,7 +4,7 @@ module SessionsHelper
   end
 
   def logout(student)
-    session[:student_id].destroy
+    session.delete(:student_id)
     @current_user = nil
   end
 
