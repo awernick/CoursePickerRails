@@ -5,14 +5,14 @@ class SessionsController < ApplicationController
 
   def new
     if logged_in?
-      return redirect_to current_user
+      return redirect_to root_path
     end
   end
 
   def create
     if @student && @student.authenticate(params[:session][:password])
       login(@student)
-      redirect_to @student
+      redirect_to root_path
     else
       # FLASH ERROR 
       render :new
