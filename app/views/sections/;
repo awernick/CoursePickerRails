@@ -1,20 +1,16 @@
 <div class="col-sm-12">
-  <%= link_to "Back", courses_path %>
   <h1> Course: <%= @course.name %> </h1>
   <h3> Available Times </h3>
   <hr/>
   <%= render "sections/filter_form" %>
   <table class="table table-striped">
     <thead>
+      <th> Class Days </th>
       <th> 
-        <%= sort_link('Class Days', 'days', @sorting.direction) %>
-      </th>
-      <th> 
-        <%= sort_link('Meeting Time', 'start_time', @sorting.direction) %>
+        <%= link_to 'Meeting Time', sort_link('start_time', @sorting.direction) %>
       </th>
       <th>
-        <%= sort_link('Professor', 'professors.last_name', @sorting.direction) %>
-      </th>
+        <%= link_to 'Professor', sort_link('professor', @sorting.direction) %> </th>
       <th> # Enrolled </th>
       <th> &nbsp; </th>
     </thead>

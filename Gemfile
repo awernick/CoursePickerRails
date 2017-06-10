@@ -17,6 +17,7 @@ gem 'bitmask_attributes'
 gem 'will_paginate', '~> 3.1.0'
 gem 'bootstrap-timepicker-rails'
 gem 'chronic'
+gem 'will_paginate-bootstrap'
 
 group :development, :test do
   gem 'byebug'

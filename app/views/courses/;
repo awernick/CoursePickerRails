@@ -1,8 +1,0 @@
-<div class="col-sm-12">
-  <h1> Courses </h1>
-  <hr/>
-  <% for course in @courses %>
-    <div class="col-sm-12">
-    </div>
-  <% end %>
-</div>

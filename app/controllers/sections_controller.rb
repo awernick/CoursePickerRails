@@ -1,4 +1,5 @@
 require 'chronic'
+require 'ostruct'
 
 class SectionsController < ApplicationController
   include SessionsHelper
@@ -14,38 +15,8 @@ class SectionsController < ApplicationController
       @sections = Section.all
     end
 
-    # Display filtered days
-    if params[:days].present?
-      @sections = @sections.with_days(*params[:days].map(&:to_sym))
-    end
-
-    # Display classes later or starting at the the start time
-    if params[:start_time].present?
-      start_time = Chronic.parse(params[:start_time]).strftime("%I:%M%p")
-      @sections = @sections.where("start_time >= ?", start_time)
-    end
-
-    # Display classes earlier or ending at end_time
-    if params[:end_time].present?
-      end_time = Chronic.parse(params[:end_time]).strftime("%I:%M%p")
-      @sections = @sections.where("end_time <= ?", end_time)
-    end
-
-    # Try to find the professor by last name or first name
-    # TODO: Search by both properties and not either or.
-    if params[:professor].present?
-      @sections = @sections.joins(:professor).where(
-        'professors.first_name LIKE ? OR ' \
-        'professors.last_name LIKE ?', 
-        "%#{params[:professor]}", 
-        "%#{params[:professor]}"
-      )
-    end
-
-    @sections.paginate({
-      page: params[:page],
-      per_page: params[:per_page]
-    })
+    @sections = apply_filters(@sections)
+    @sections = apply_sorting(@sections)
 
     respond_to do |format|
       format.json { render json: @sections }
@@ -108,6 +79,70 @@ class SectionsController < ApplicationController
 
   private 
 
+  def apply_filters(sections)
+    # Create an object that will store all 
+    # of our values. This will make it
+    # easy to access values in the front end
+    @filters = OpenStruct.new({
+      page: params[:page],
+      per_page: params[:per_page],
+      days: params[:days] || [],
+      start_time: params[:start_time],
+      end_time: params[:end_time],
+      professor: params[:professor],
+    })
+
+    # Display filtered days
+    if @filters.days.present?
+      days = @filters.days.map {|d| Section::DAYS.keys[d.to_i] }
+      sections = sections.with_days(*days)
+    end
+
+    # Display classes later or starting at the the start time
+    if @filters.start_time.present?
+      start_time = Chronic.parse(@filters.start_time).strftime("%I:%M%p")
+      sections = sections.where("start_time >= ?", start_time)
+    end
+
+    # Display classes earlier or ending at end_time
+    if @filters.end_time.present?
+      end_time = Chronic.parse(@filters.end_time).strftime("%I:%M%p")
+      sections = sections.where("end_time <= ?", end_time)
+    end
+
+    # Try to find the professor by last name or first name
+    # TODO: Search by both properties and not either or.
+    if @filters.professor.present?
+      sections = sections.joins(:professor).where(
+        'professors.first_name LIKE ? OR ' \
+        'professors.last_name LIKE ?', 
+        "%#{@filters.professor}", 
+        "%#{@filters.professor}"
+      )
+    end
+
+    sections = sections.paginate({
+      page: @filters.page,
+      per_page: @filters.per_page
+    })
+
+    return sections
+  end
+
+  def apply_sorting(sections)
+    @sorting ||= OpenStruct.new({
+      column: params[:sort_column],
+      direction: params[:direction]
+    })
+  
+    if @sorting.column.present?
+      sections = sections.joins(:professor) if @sorting.column.include? "professor"
+      return sections.order("#{@sorting.column} #{@sorting.direction}")
+    else
+      return sections
+    end
+  end
+
   def set_course
     if params.has_key? :course_id
       @course = Course.find(params[:course_id])
@@ -124,7 +159,7 @@ class SectionsController < ApplicationController
 
   def authenticate_student
     unless logged_in?
-      # FLASH ERROR
+      flash[:info] = "Please login to proceed with the previous action"
       redirect_to login_path
     end
   end
