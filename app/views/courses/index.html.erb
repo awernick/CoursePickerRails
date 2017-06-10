@@ -1,0 +1,23 @@
+<div class="col-sm-12">
+  <h1> Courses </h1>
+  <hr/>
+  <table class="table table-striped">
+    <thead>
+      <th> Name </th>
+      <th> Description </th>
+      <th> Cost </th>
+      <th> &nbsp; </th>
+    </thead>
+    <tbody>
+      <% for course in @courses %>
+        <tr>
+          <td> <%= course.name %> </td>
+          <td> <%= course.description %> </td>
+          <td> <%= cents_to_dollars(course.cost) %> </td>
+          <td> <%= link_to 'Available Times', course_sections_path(course) %> </td>
+        </tr>
+      <% end %>
+    </tbody>
+
+  </table>
+</div>
