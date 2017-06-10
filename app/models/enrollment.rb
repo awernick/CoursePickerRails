@@ -1,4 +1,4 @@
 class Enrollment < ActiveRecord::Base
-  has_many :users
-  has_many :sections
+  belongs_to :student
+  belongs_to :section
 end
