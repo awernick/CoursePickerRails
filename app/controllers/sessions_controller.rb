@@ -4,8 +4,8 @@ class SessionsController < ApplicationController
   before_filter :set_student, except: :new
 
   def new
-    if logged_in?(@student)
-      return redirect_to @student 
+    if logged_in?
+      return redirect_to current_user
     end
   end
 

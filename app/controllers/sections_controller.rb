@@ -2,13 +2,27 @@ class SectionsController < ApplicationController
   include SessionsHelper
 
   before_filter :authenticate_student, only: [:enroll, :drop]
-  before_filter :set_course, except: [:new, :create]
+  before_filter :set_course
   before_filter :set_section, except: [:index, :new, :create]
 
   def index
+    if @course.present?
+      @sections = @course.sections
+    else
+      @sections = Section.all
+    end
+
+    respond_to do |format|
+      format.json { render json: @sections }
+      format.html
+    end
   end
 
   def show
+    respond_to do |format|
+      format.json { render json: @section }
+      format.html
+    end
   end
 
   def new
@@ -34,10 +48,10 @@ class SectionsController < ApplicationController
   end
 
   def enroll
-    @student = Student.find(params[:user_id])
+    @student = Student.find(params[:student_id])
 
     # Make sure the Student trying to enroll
-    # is the same as the logged in user
+    # is the same as the logged in student
     unless logged_in? @student
       # FLASH ERROR
       return redirect_to action: :index
@@ -82,7 +96,7 @@ class SectionsController < ApplicationController
   end
 
   def authenticate_student
-    unless current_user.present?
+    unless logged_in?
       # FLASH ERROR
       redirect_to login_path
     end
