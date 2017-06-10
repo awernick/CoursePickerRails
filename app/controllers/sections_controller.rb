@@ -12,6 +12,16 @@ class SectionsController < ApplicationController
       @sections = Section.all
     end
 
+    # Display filtered days
+    if params[:days]
+      @sections = @sections.with_days(*params[:days].map(&:to_sym))
+    end
+
+    @sections.paginate({
+      page: params[:page],
+      per_page: params[:per_page]
+    })
+
     respond_to do |format|
       format.json { render json: @sections }
       format.html

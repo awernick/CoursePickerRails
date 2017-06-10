@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170610164250) do
+ActiveRecord::Schema.define(version: 20170610193612) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,12 +28,23 @@ ActiveRecord::Schema.define(version: 20170610164250) do
     t.integer "section_id"
   end
 
+  create_table "professors", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "title"
+    t.string "email"
+  end
+
   create_table "sections", force: :cascade do |t|
     t.integer "course_id"
-    t.date    "date"
-    t.time    "time"
-    t.uuid    "uuid",      default: "uuid_generate_v4()"
+    t.uuid    "uuid",         default: "uuid_generate_v4()"
+    t.integer "days"
+    t.time    "start_time"
+    t.time    "end_time"
+    t.integer "professor_id"
   end
+
+  add_index "sections", ["professor_id"], name: "index_sections_on_professor_id", using: :btree
 
   create_table "students", force: :cascade do |t|
     t.string "first_name"

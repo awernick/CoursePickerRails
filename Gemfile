@@ -14,6 +14,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'bcrypt'
 gem 'bootstrap-sass', '~> 3.3.6'
 gem 'bitmask_attributes'
+gem 'will_paginate', '~> 3.1.0'
 
 group :development, :test do
   gem 'byebug'

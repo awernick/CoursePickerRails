@@ -1,10 +1,40 @@
 <div class="col-sm-12">
-  <h1> Courses: <%= @course.name %> </h1>
-  <h2> Available Times </h2>
+  <h1> Course: <%= @course.name %> </h1>
+  <h3> Available Times </h3>
   <hr/>
+  <div class="panel panel-default">
+    <%= form_tag course_sections_path, method: 'get' do %>
+      <div class="panel-body">
+        <h5> Filter </h5>
+        <div class="row">
+          <div class="col-sm-4">
+            <h5><small> Days: </small> </h5>
+            <% Section::DAYS.each do |abbrev, name| %>
+              <div class="checkbox">
+                <label>
+                  <%= check_box_tag("days[]", abbrev) %> <%= name %>
+                </label>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="col-sm-4">
+            <h5><small> Time: </small> </h5>
+          </div>
+
+          <div class="col-sm-4">
+            <h5><small> Professor: </small> </h5>
+          </div>
+        </div>
+        <%= submit_tag("Filter", class: 'btn btn-default pull-right') %>
+      </div>
+    <% end %>
+  </div>
   <table class="table table-striped">
     <thead>
-      <th> Class Days </th>
+      <th> 
+        Class Days 
+      </th>
       <th> Meeting Time </th>
       <th> Professor </th>
       <th> &nbsp; </th>
@@ -14,7 +44,7 @@
         <tr>
           <td> <%= day_bitmask_to_str(section.days) %> </td>
           <td> <%= section.start_time %> </td>
-          <td></td>
+          <td> <%= section.professor.try(:abbrev_name) %></td>
           <% if logged_in? && section.enrolled?(current_student) %>
             <td> <%= link_to 'Drop Course', 
               drop_section_path(section.uuid), method: :post %> </td>

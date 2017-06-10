@@ -2,6 +2,7 @@ require 'securerandom'
 
 class Section < ActiveRecord::Base
   belongs_to :course
+  belongs_to :professor
   has_many :enrollments
   has_many :students, through: :enrollments
 
@@ -11,6 +12,13 @@ class Section < ActiveRecord::Base
   before_save do
     self.uuid = SecureRandom.uuid
   end
+
+  # Validations
+  validates :days, presence: true
+  validates :start_time, presence: true
+  validates :end_time, presence: true
+  validates :professor, presence: true
+  validates :course, presence: true
 
   # Use a bitmask to store meeting days
   DAYS = {
